@@ -27,9 +27,13 @@ mv bin/net ../../bin/
 chmod u+x bin/fastqc
 mv bin/fastqc ../../bin/fastqc.pl
 echo '#!/bin/bash' > ../../bin/fastqc
-echo 'script_dir="$(cd "$(dirname "$(stat -f "$0")")" && pwd)"' >> ../../bin/fastqc
+echo 'script_dir="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"' >> ../../bin/fastqc
 echo 'export CLASSPATH=${script_dir}/commons-math3-3.6.1.jar' >> ../../bin/fastqc
-echo './fastqc.pl "$@"' >> ../../bin/fastqc
+echo '${script_dir}/fastqc.pl "$@"' >> ../../bin/fastqc
 chmod u+x ../../bin/fastqc
+
+#retrieve test file
+curl -o ../../bin/test.fastq.gz http://bioseed.mcs.anl.gov/~seaver/Files/Sample_Reads/WT1_S1_L001_R2_001.fastq.gz
+
 cd ../../
 #rm -rf temp
