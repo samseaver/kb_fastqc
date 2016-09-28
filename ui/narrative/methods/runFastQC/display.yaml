@@ -29,7 +29,7 @@ suggestions:
 # Configure the display and description of parameters
 #
 parameters :
-    parameter_1 :
+    input_file :
         ui-name : |
             First parameter
         short-hint : |

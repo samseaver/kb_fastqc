@@ -11,8 +11,8 @@
     },
     "parameters": [ 
         {
-            "id": "parameter_1",
-            "optional": true,
+            "id": "input_file",
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [ "" ],
@@ -26,29 +26,29 @@
         "service-mapping": {
             "url": "",
             "name": "kb_fastqc",
-            "method": "your_method",
+            "method": "runFastQC",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
-                    "target_argument_position": 0
+                    "target_property": "input_ws"
                 },
                 {
-                    "input_parameter": "parameter_1",
-                    "target_argument_position": 1
+                    "input_parameter": "input_file",
+                    "target_property": "input_file"
                 }
             ],
             "output_mapping": [
                 {
-                    "service_method_output_path": [0],
-                    "target_property": "output"
+                    "service_method_output_path": [0, "report_name"],
+                    "target_property": "report_name"
                 },
                 {
-                    "input_parameter": "parameter_1",
-                    "target_property": "input"
+                    "service_method_output_path": [0, "report_ref"],
+                    "target_property": "report_ref"
                 },
                 {
                     "narrative_system_variable": "workspace",
-                    "target_property": "workspaceName"
+                    "target_property": "workspace_name"
                 }
             ]
         }
