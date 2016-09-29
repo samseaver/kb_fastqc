@@ -9,7 +9,7 @@ module kb_fastqc {
        string input_file;
    } FastQCParams;
 
-   async funcdef runFastQC(FastQCParams input_params)
+   funcdef runFastQC(FastQCParams input_params)
        returns (string encoded_html_string)
        authentication required;
 };
