@@ -9,8 +9,6 @@ RUN apt-get update && apt-get install -y ant
 RUN mkdir -p /kb/deps
 COPY ./deps/install_fastqc.sh /kb/deps/
 WORKDIR /kb/deps
-RUN pwd
-RUN ls
 RUN ./install_fastqc.sh
 
 # -----------------------------------------
@@ -22,6 +20,9 @@ WORKDIR /kb/module
 RUN mkdir -p ./bin
 RUN cp -r /kb/deps/bin/* ./bin/
 ENV PATH=/kb/module/bin:$PATH
+
+#retrieve test file
+RUN curl -o test/test_1.fastq.gz http://bioseed.mcs.anl.gov/~seaver/Files/Sample_Reads/WT1_S1_L001_R2_001.fastq.gz
 
 RUN make
 

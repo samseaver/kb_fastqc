@@ -32,8 +32,6 @@ echo 'export CLASSPATH=${script_dir}/commons-math3-3.6.1.jar' >> ../../bin/fastq
 echo '${script_dir}/fastqc.pl "$@"' >> ../../bin/fastqc
 chmod u+x ../../bin/fastqc
 
-#retrieve test file
-curl -o ../../bin/test.fastq.gz http://bioseed.mcs.anl.gov/~seaver/Files/Sample_Reads/WT1_S1_L001_R2_001.fastq.gz
-
+#retrieve test files
 cd ../../
-#rm -rf temp
+rm -rf temp

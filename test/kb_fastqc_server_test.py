@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import unittest
-import os
+import os,sys
 import json
 import time
 import requests
+import subprocess
 
 from os import environ
 try:
@@ -72,14 +73,27 @@ class kb_fastqcTest(unittest.TestCase):
         return self.__class__.ctx
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'.
-    def test_your_method(self):
-        # Prepare test objects in workspace if needed using 
-        # self.getWsClient().save_objects({'workspace': self.getWsName(), 'objects': []})
-        #
-        # Run your method by
-        # ret = self.getImpl().your_method(self.getContext(), parameters...)
-        #
-        # Check returned data with
-        # self.assertEqual(ret[...], ...) or other unittest methods
+    def test_local_fastqc(self):
+        #This assumes, and apparently rightly so, that we're still in the /kb/module/test directory
+        output = subprocess.check_output(["fastqc", "test_1.fastq.gz"])
+        self.assertTrue("Analysis complete" in output)
         pass
         
+    def test_fastqc(self):
+        #create ws, and load test reads
+        #Check WS exists
+        #FastQC_WS_Exists = 0
+        #workspaces = self.getWsClient().list_workspace_info({})
+        #for record in workspaces:
+        #    if("FastQC_Example" in record[1]):
+        #        FastQC_WS_Exists = 1
+        #        break
+        #if(FastQC_WS_Exists == 0):
+        #    self.getWsClient().create_workspace({"workspace":"FastQC_Example"})
+        #else:
+        #    print("FastQC_Example workspace exists")
+
+        input_params={'input_ws':'FastQC_Example','input_file':'FastQC_Sample_Reads'}
+        output = self.getImpl().runFastQC(self.getContext(), input_params)
+        self.assertTrue("Analysis complete" in output[0])
+        pass
