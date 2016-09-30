@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
-import os
+import os,uuid
 import requests,subprocess
 from biokbase.workspace.client import Workspace as workspaceService
 #END_HEADER
@@ -46,7 +46,7 @@ class kb_fastqc:
         :returns: instance of String
         """
         # ctx is the context object
-        # return variables are: encoded_html_string
+        # return variables are: reported_output
         #BEGIN runFastQC
 
         token = ctx['token']
@@ -95,15 +95,42 @@ class kb_fastqc:
             for chunk in r.iter_content(1024):
                 read_file.write(chunk)
 
-        encoded_html_string = subprocess.check_output(["fastqc"]+read_file_list)
+        subprocess.check_output(["fastqc"]+read_file_list)
+        report = " ".join(["fastqc"]+read_file_list)
+        reportObj = {'objects_created':[],
+                     'text_message':report}
+
+#@optional warnings file_links html_links direct_html direct_html_link_index
+
+#typedef structure {
+#        string text_message;
+#        list<LinkedFile> file_links;
+#        list<LinkedFile> html_links;
+#        string direct_html;
+#        int direct_html_link_index;
+#    } Report;
+        
+        #reportObj['objects_created'].append({'ref':str(input_params['input_ws'])+'/'+input_params['output_read_library']+'_paired',
+
+        reportName = 'trimmomatic_report_' + str(hex(uuid.getnode()))
+        report_obj_info = wsClient.save_objects({'id':info[6],
+                                                 'objects':[{'type':'KBaseReport.Report',
+                                                             'data':reportObj,
+                                                             'name':reportName,
+                                                             'meta':{},
+                                                             'hidden':1,
+                                                             'provenance':provenance}]})
+        report_ref = str(report_obj_info[0][6]) + '/' + str(report_obj_info[0][0]) = '/' + str(report_obj_info[0][4])
+        reported_output = { 'report_name': reportName, 'report_ref': report_ref }
+
         #END runFastQC
 
         # At some point might do deeper type checking...
-        if not isinstance(encoded_html_string, basestring):
+        if not isinstance(reported_output, basestring):
             raise ValueError('Method runFastQC return value ' +
                              'encoded_html_string is not type basestring as required.')
         # return the results
-        return [encoded_html_string]
+        return [reported_output]
 
     def status(self, ctx):
         #BEGIN_STATUS
