@@ -111,7 +111,7 @@ sub new
 
 =head2 runFastQC
 
-  $encoded_html_string = $obj->runFastQC($input_params)
+  $reported_output = $obj->runFastQC($input_params)
 
 =over 4
 
@@ -121,10 +121,13 @@ sub new
 
 <pre>
 $input_params is a kb_fastqc.FastQCParams
-$encoded_html_string is a string
+$reported_output is a kb_fastqc.FastQCOutput
 FastQCParams is a reference to a hash where the following keys are defined:
 	input_ws has a value which is a string
 	input_file has a value which is a string
+FastQCOutput is a reference to a hash where the following keys are defined:
+	report_name has a value which is a string
+	report_ref has a value which is a string
 
 </pre>
 
@@ -133,10 +136,13 @@ FastQCParams is a reference to a hash where the following keys are defined:
 =begin text
 
 $input_params is a kb_fastqc.FastQCParams
-$encoded_html_string is a string
+$reported_output is a kb_fastqc.FastQCOutput
 FastQCParams is a reference to a hash where the following keys are defined:
 	input_ws has a value which is a string
 	input_file has a value which is a string
+FastQCOutput is a reference to a hash where the following keys are defined:
+	report_name has a value which is a string
+	report_ref has a value which is a string
 
 
 =end text
@@ -308,6 +314,38 @@ input_file has a value which is a string
 a reference to a hash where the following keys are defined:
 input_ws has a value which is a string
 input_file has a value which is a string
+
+
+=end text
+
+=back
+
+
+
+=head2 FastQCOutput
+
+=over 4
+
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+report_name has a value which is a string
+report_ref has a value which is a string
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+report_name has a value which is a string
+report_ref has a value which is a string
 
 
 =end text

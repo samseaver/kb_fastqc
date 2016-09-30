@@ -167,15 +167,15 @@ public class KbFastqcClient {
      * <pre>
      * </pre>
      * @param   inputParams   instance of type {@link us.kbase.kbfastqc.FastQCParams FastQCParams}
-     * @return   parameter "encoded_html_string" of String
+     * @return   parameter "reported_output" of type {@link us.kbase.kbfastqc.FastQCOutput FastQCOutput}
      * @throws IOException if an IO exception occurs
      * @throws JsonClientException if a JSON RPC exception occurs
      */
-    public String runFastQC(FastQCParams inputParams, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
+    public FastQCOutput runFastQC(FastQCParams inputParams, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
         List<Object> args = new ArrayList<Object>();
         args.add(inputParams);
-        TypeReference<List<String>> retType = new TypeReference<List<String>>() {};
-        List<String> res = caller.jsonrpcCall("kb_fastqc.runFastQC", args, retType, true, true, jsonRpcContext, this.serviceVersion);
+        TypeReference<List<FastQCOutput>> retType = new TypeReference<List<FastQCOutput>>() {};
+        List<FastQCOutput> res = caller.jsonrpcCall("kb_fastqc.runFastQC", args, retType, true, true, jsonRpcContext, this.serviceVersion);
         return res.get(0);
     }
 

@@ -37,7 +37,8 @@ class kb_fastqc(object):
         """
         :param input_params: instance of type "FastQCParams" -> structure:
            parameter "input_ws" of String, parameter "input_file" of String
-        :returns: instance of String
+        :returns: instance of type "FastQCOutput" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
         """
         return self._client.call_method(
             'kb_fastqc.runFastQC',

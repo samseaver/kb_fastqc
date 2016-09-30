@@ -23,7 +23,7 @@ class kb_fastqc:
     #########################################
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/kbaseapps/kb_fastqc"
-    GIT_COMMIT_HASH = "ed40d3b420b895f5ac3797ec26470f8773c2c309"
+    GIT_COMMIT_HASH = "f7531ce986edcebecc33300d6264250651b6dd58"
     
     #BEGIN_CLASS_HEADER
     
@@ -43,7 +43,8 @@ class kb_fastqc:
         """
         :param input_params: instance of type "FastQCParams" -> structure:
            parameter "input_ws" of String, parameter "input_file" of String
-        :returns: instance of String
+        :returns: instance of type "FastQCOutput" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
         """
         # ctx is the context object
         # return variables are: reported_output
@@ -112,6 +113,13 @@ class kb_fastqc:
         
         #reportObj['objects_created'].append({'ref':str(input_params['input_ws'])+'/'+input_params['output_read_library']+'_paired',
 
+       #load provenance
+        provenance = [{}]
+        if 'provenance' in ctx:
+            provenance = ctx['provenance']
+        # add additional info to provenance here, in this case the input data object reference
+        provenance[0]['input_ws_objects']=[str(input_params['input_ws'])+'/'+str(input_params['input_file'])]
+
         reportName = 'trimmomatic_report_' + str(hex(uuid.getnode()))
         report_obj_info = wsClient.save_objects({'id':info[6],
                                                  'objects':[{'type':'KBaseReport.Report',
@@ -120,15 +128,15 @@ class kb_fastqc:
                                                              'meta':{},
                                                              'hidden':1,
                                                              'provenance':provenance}]})
-        report_ref = str(report_obj_info[0][6]) + '/' + str(report_obj_info[0][0]) = '/' + str(report_obj_info[0][4])
+        report_ref = str(report_obj_info[0][6]) + '/' + str(report_obj_info[0][0]) + '/' + str(report_obj_info[0][4])
         reported_output = { 'report_name': reportName, 'report_ref': report_ref }
 
         #END runFastQC
 
         # At some point might do deeper type checking...
-        if not isinstance(reported_output, basestring):
+        if not isinstance(reported_output, dict):
             raise ValueError('Method runFastQC return value ' +
-                             'encoded_html_string is not type basestring as required.')
+                             'reported_output is not type dict as required.')
         # return the results
         return [reported_output]
 
