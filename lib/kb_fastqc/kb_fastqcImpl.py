@@ -52,8 +52,6 @@ class kb_fastqc:
         # return variables are: reported_output
         #BEGIN runFastQC
 
-        print("Context: ",type(ctx))
-        print("Context: ",ctx)
         token = ctx['token']
         wsClient = workspaceService(self.workspaceURL, token=token)
         headers = {'Authorization': 'OAuth '+token}
@@ -89,12 +87,15 @@ class kb_fastqc:
                 elif 'lib'+number in readLibrary:
                     reads.append(readLibrary['lib'+number]['file'])
 
-        read_file_list=list()
+        read_ids = list()
         for read in reads:
-            #compose file name
             read_file_name = str(read['id'])
             if 'file_name' in read:
                 read_file_name = read['file_name']
+            read_ids.append(read_file_name)
+
+        read_file_list=list()
+        for read_file_name in read_ids:
             read_file_name=read_file_path+"/"+read_file_name
             read_file_list.append(read_file_name)
 
@@ -104,16 +105,24 @@ class kb_fastqc:
                 read_file.write(chunk)
 
         subprocess.check_output(["fastqc"]+read_file_list)
-        report = " ".join(["fastqc"]+read_file_list)
+        report = "Command run: "+" ".join(["fastqc"]+read_file_list)
         
         output_files = list()
         for file in os.listdir(read_file_path):
             if(file.endswith(".html")):
                 output_files.append({'path' : read_file_path+"/"+file, 'name' : file})
 
+        html_string = "<html><title>FastQC Report</title><body>"
+        html_string += "<p>FastQC run with "+str(input_params["input_file"])+" which contained "+str(len(reads))+" reads:</p>"
+        for read in read_ids:
+            html_string += read+"<br/>"
+        html_string += "</html>"
         report_params = { 'message' : report, 'objects_created' : [],
-                          'direct_html' : "<html><body><table><tr><td>Good Morning</td><td>Starshine</td></tr><tr><td>The Earth says</td><td>Hello</td></tr></table></body></html>",
-                          'file_links' : output_files, 'html_links' : [], 'workspace_name' : input_params['input_ws'], 'report_object_name' : 'kb_fastqc_report_' + uuid_string }
+                          'direct_html' : html_string,
+                          'file_links' : output_files, 
+                          'html_links' : [],
+                          'workspace_name' : input_params['input_ws'],
+                          'report_object_name' : 'kb_fastqc_report_' + uuid_string }
         kbase_report_client = KBaseReport(self.callback_url, token=token, service_ver='dev')
         output = kbase_report_client.create_extended_report(report_params)
         reported_output = { 'report_name': output['name'], 'report_ref': output['ws_id'] }
