@@ -109,10 +109,10 @@ class kb_fastqc:
         output_files = list()
         for file in os.listdir(read_file_path):
             if(file.endswith(".html")):
-                output_files.append({'path' : read_file_path+"/"+file})
+                output_files.append({'path' : read_file_path+"/"+file, 'name' : file})
 
         report_params = { 'message' : report, 'objects_created' : [],
-                          'direct_html' : "<html></html",#<body><table><tr><td>Good Morning</td><td>Starshine</td></tr><tr><td>The Earth says</td><td>Hello</td></tr></table></body></html>",
+                          'direct_html' : "<html><body><table><tr><td>Good Morning</td><td>Starshine</td></tr><tr><td>The Earth says</td><td>Hello</td></tr></table></body></html>",
                           'file_links' : output_files, 'html_links' : [], 'workspace_name' : input_params['input_ws'], 'report_object_name' : 'kb_fastqc_report_' + uuid_string }
         kbase_report_client = KBaseReport(self.callback_url, token=token, service_ver='dev')
         output = kbase_report_client.create_extended_report(report_params)
