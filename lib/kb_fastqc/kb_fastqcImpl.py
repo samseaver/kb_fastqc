@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 import os,uuid
 import requests,subprocess
+from KBaseReport.KBaseReportClient import KBaseReport
 from biokbase.workspace.client import Workspace as workspaceService
 #END_HEADER
 
@@ -35,6 +36,7 @@ class kb_fastqc:
         #BEGIN_CONSTRUCTOR
         self.workspaceURL = config['workspace-url']
         self.scratch = os.path.abspath(config['scratch'])
+        self.callback_url = os.environ['SDK_CALLBACK_URL']
         #END_CONSTRUCTOR
         pass
     
@@ -50,9 +52,14 @@ class kb_fastqc:
         # return variables are: reported_output
         #BEGIN runFastQC
 
+        print("Context: ",type(ctx))
+        print("Context: ",ctx)
         token = ctx['token']
         wsClient = workspaceService(self.workspaceURL, token=token)
         headers = {'Authorization': 'OAuth '+token}
+        uuid_string = str(uuid.uuid4())
+        read_file_path=self.scratch+"/"+uuid_string
+        os.mkdir(read_file_path)
 
         info=None
         readLibrary=None
@@ -88,7 +95,7 @@ class kb_fastqc:
             read_file_name = str(read['id'])
             if 'file_name' in read:
                 read_file_name = read['file_name']
-            read_file_name=self.scratch+"/"+read_file_name
+            read_file_name=read_file_path+"/"+read_file_name
             read_file_list.append(read_file_name)
 
             read_file = open(read_file_name, 'w', 0)
@@ -98,38 +105,18 @@ class kb_fastqc:
 
         subprocess.check_output(["fastqc"]+read_file_list)
         report = " ".join(["fastqc"]+read_file_list)
-        reportObj = {'objects_created':[],
-                     'text_message':report}
-
-#@optional warnings file_links html_links direct_html direct_html_link_index
-
-#typedef structure {
-#        string text_message;
-#        list<LinkedFile> file_links;
-#        list<LinkedFile> html_links;
-#        string direct_html;
-#        int direct_html_link_index;
-#    } Report;
         
-        #reportObj['objects_created'].append({'ref':str(input_params['input_ws'])+'/'+input_params['output_read_library']+'_paired',
+        output_files = list()
+        for file in os.listdir(read_file_path):
+            if(file.endswith(".html")):
+                output_files.append({'path' : read_file_path+"/"+file})
 
-       #load provenance
-        provenance = [{}]
-        if 'provenance' in ctx:
-            provenance = ctx['provenance']
-        # add additional info to provenance here, in this case the input data object reference
-        provenance[0]['input_ws_objects']=[str(input_params['input_ws'])+'/'+str(input_params['input_file'])]
-
-        reportName = 'trimmomatic_report_' + str(hex(uuid.getnode()))
-        report_obj_info = wsClient.save_objects({'id':info[6],
-                                                 'objects':[{'type':'KBaseReport.Report',
-                                                             'data':reportObj,
-                                                             'name':reportName,
-                                                             'meta':{},
-                                                             'hidden':1,
-                                                             'provenance':provenance}]})
-        report_ref = str(report_obj_info[0][6]) + '/' + str(report_obj_info[0][0]) + '/' + str(report_obj_info[0][4])
-        reported_output = { 'report_name': reportName, 'report_ref': report_ref }
+        report_params = { 'message' : report, 'objects_created' : [],
+                          'direct_html' : "<html></html",#<body><table><tr><td>Good Morning</td><td>Starshine</td></tr><tr><td>The Earth says</td><td>Hello</td></tr></table></body></html>",
+                          'file_links' : output_files, 'html_links' : [], 'workspace_name' : input_params['input_ws'], 'report_object_name' : 'kb_fastqc_report_' + uuid_string }
+        kbase_report_client = KBaseReport(self.callback_url, token=token, service_ver='dev')
+        output = kbase_report_client.create_extended_report(report_params)
+        reported_output = { 'report_name': output['name'], 'report_ref': output['ws_id'] }
 
         #END runFastQC
 
