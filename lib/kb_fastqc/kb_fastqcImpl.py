@@ -123,9 +123,9 @@ class kb_fastqc:
                           'html_links' : [],
                           'workspace_name' : input_params['input_ws'],
                           'report_object_name' : 'kb_fastqc_report_' + uuid_string }
-        kbase_report_client = KBaseReport(self.callback_url, token=token, service_ver='dev')
+        kbase_report_client = KBaseReport(self.callback_url, token=token)
         output = kbase_report_client.create_extended_report(report_params)
-        reported_output = { 'report_name': output['name'], 'report_ref': output['ws_id'] }
+        reported_output = { 'report_name': output['name'], 'report_ref': output['ref'] }
 
         #END runFastQC
 
