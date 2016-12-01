@@ -7,6 +7,7 @@ module kb_fastqc {
    typedef structure {
        string input_ws;
        string input_file;
+       string input_file_ref;
    } FastQCParams;
 
     typedef structure {
