@@ -20,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
     "input_ws",
-    "input_file"
+    "input_file",
+    "input_file_ref"
 })
 public class FastQCParams {
 
@@ -28,6 +29,8 @@ public class FastQCParams {
     private String inputWs;
     @JsonProperty("input_file")
     private String inputFile;
+    @JsonProperty("input_file_ref")
+    private String inputFileRef;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("input_ws")
@@ -60,6 +63,21 @@ public class FastQCParams {
         return this;
     }
 
+    @JsonProperty("input_file_ref")
+    public String getInputFileRef() {
+        return inputFileRef;
+    }
+
+    @JsonProperty("input_file_ref")
+    public void setInputFileRef(String inputFileRef) {
+        this.inputFileRef = inputFileRef;
+    }
+
+    public FastQCParams withInputFileRef(String inputFileRef) {
+        this.inputFileRef = inputFileRef;
+        return this;
+    }
+
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
@@ -72,7 +90,7 @@ public class FastQCParams {
 
     @Override
     public String toString() {
-        return ((((((("FastQCParams"+" [inputWs=")+ inputWs)+", inputFile=")+ inputFile)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((("FastQCParams"+" [inputWs=")+ inputWs)+", inputFile=")+ inputFile)+", inputFileRef=")+ inputFileRef)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

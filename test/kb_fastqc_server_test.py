@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import unittest
-import os,sys
+import os, sys
 import json
 import time
 import requests
 import subprocess
+import shutil
 
 from os import environ
 try:
@@ -18,6 +19,7 @@ from biokbase.workspace.client import Workspace as workspaceService
 from kb_fastqc.kb_fastqcImpl import kb_fastqc
 from kb_fastqc.kb_fastqcServer import MethodContext
 
+from ReadsUtils.ReadsUtilsClient import ReadsUtils
 
 class kb_fastqcTest(unittest.TestCase):
 
@@ -48,6 +50,20 @@ class kb_fastqcTest(unittest.TestCase):
         cls.wsClient = workspaceService(cls.wsURL, token=token)
         cls.serviceImpl = kb_fastqc(cls.cfg)
 
+        #retrieve and setup test files
+        test_fq_filename = "test_1.fastq.gz"
+        output = subprocess.check_output(["curl",
+                                          "-o",
+                                          test_fq_filename,
+                                          "http://bioseed.mcs.anl.gov/~seaver/Files/Sample_Reads/WT1_S1_L001_R2_001.fastq.gz"])
+        cls.large_fq_test_file1 = os.path.join(cls.cfg['scratch'], test_fq_filename)
+        shutil.copy(test_fq_filename, cls.large_fq_test_file1)
+
+        fq_filename = "interleaved.fq"
+        cls.small_fq_test_file2 = os.path.join(cls.cfg['scratch'], fq_filename)
+        shutil.copy(os.path.join("data", fq_filename), cls.small_fq_test_file2)
+
+
     @classmethod
     def tearDownClass(cls):
         if hasattr(cls, 'wsName'):
@@ -62,7 +78,7 @@ class kb_fastqcTest(unittest.TestCase):
             return self.__class__.wsName
         suffix = int(time.time() * 1000)
         wsName = "test_kb_fastqc_" + str(suffix)
-        ret = self.getWsClient().create_workspace({'workspace': wsName})
+        self.getWsClient().create_workspace({'workspace': wsName})
         self.__class__.wsName = wsName
         return wsName
 
@@ -74,27 +90,33 @@ class kb_fastqcTest(unittest.TestCase):
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'.
     def test_local_fastqc(self):
-        #This assumes, and apparently rightly so, that we're still in the /kb/module/test directory
-        output = subprocess.check_output(["fastqc", "test_1.fastq.gz"])
+        # This assumes, and apparently rightly so, that we're still in the /kb/module/test directory
+        output = subprocess.check_output(["fastqc", self.large_fq_test_file1])
         self.assertTrue("Analysis complete" in output)
         pass
         
-    def test_fastqc(self):
-        #create ws, and load test reads
-        #Check WS exists
-        #FastQC_WS_Exists = 0
-        #workspaces = self.getWsClient().list_workspace_info({})
-        #for record in workspaces:
-        #    if("FastQC_Example" in record[1]):
-        #        FastQC_WS_Exists = 1
-        #        break
-        #if(FastQC_WS_Exists == 0):
-        #    self.getWsClient().create_workspace({"workspace":"FastQC_Example"})
-        #else:
-        #    print("FastQC_Example workspace exists")
+    def test_fastqc_app(self):
+        # create ws, and load test reads
+        wsName = self.getWsName()
+        ru = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
+        input_file_ref = ru.upload_reads({'fwd_file': self.small_fq_test_file2,
+                                          'sequencing_tech': 'tech1',
+                                          'wsname': wsName,
+                                          'name': 'reads1',
+                                          'interleaved': 1
+                                          })['obj_ref']
 
-        input_params={'input_ws':'FastQC_Example','input_file':'FastQC_Sample_Reads'}
-        output = self.getImpl().runFastQC(self.getContext(), input_params)
-        print output
-#        self.assertTrue("Analysis complete" in output[0])
-        pass
+        input_params = {'input_ws': wsName, 'input_file_ref': input_file_ref}
+        output = self.getImpl().runFastQC(self.getContext(), input_params)[0]
+        self.assertIn('report_name', output)
+        self.assertIn('report_ref', output)
+
+        report = self.getWsClient().get_objects2({'objects': [{'ref': output['report_ref']}]})['data'][0]['data']
+        self.assertIn('direct_html', report)
+        self.assertIn('file_links', report)
+        self.assertIn('html_links', report)
+        self.assertIn('objects_created', report)
+        self.assertIn('text_message', report)
+        self.assertIn('FastQC Report', report['direct_html'])
+
+

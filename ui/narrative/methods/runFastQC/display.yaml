@@ -16,20 +16,20 @@ icon: icon.png
 suggestions:
     apps:
         related:
-            [app1, app2]
+            []
         next:
-            [app3, app4]
+            []
     methods:
         related:
-            [method1, method2]
+            []
         next:
-            [method3, method4]
+            []
 
 #
 # Configure the display and description of parameters
 #
 parameters :
-    input_file :
+    input_file_ref :
         ui-name : |
             Reads 
         short-hint : |

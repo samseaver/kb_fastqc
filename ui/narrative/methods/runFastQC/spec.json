@@ -11,7 +11,7 @@
     },
     "parameters": [ 
         {
-            "id": "input_file",
+            "id": "input_file_ref",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -33,8 +33,9 @@
                     "target_property": "input_ws"
                 },
                 {
-                    "input_parameter": "input_file",
-                    "target_property": "input_file"
+                    "input_parameter": "input_file_ref",
+                    "target_property": "input_file_ref",
+                    "target_type_transform": "resolved-ref"
                 }
             ],
             "output_mapping": [

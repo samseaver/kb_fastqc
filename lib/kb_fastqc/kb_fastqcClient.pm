@@ -125,6 +125,7 @@ $reported_output is a kb_fastqc.FastQCOutput
 FastQCParams is a reference to a hash where the following keys are defined:
 	input_ws has a value which is a string
 	input_file has a value which is a string
+	input_file_ref has a value which is a string
 FastQCOutput is a reference to a hash where the following keys are defined:
 	report_name has a value which is a string
 	report_ref has a value which is a string
@@ -140,6 +141,7 @@ $reported_output is a kb_fastqc.FastQCOutput
 FastQCParams is a reference to a hash where the following keys are defined:
 	input_ws has a value which is a string
 	input_file has a value which is a string
+	input_file_ref has a value which is a string
 FastQCOutput is a reference to a hash where the following keys are defined:
 	report_name has a value which is a string
 	report_ref has a value which is a string
@@ -304,6 +306,7 @@ sub _validate_version {
 a reference to a hash where the following keys are defined:
 input_ws has a value which is a string
 input_file has a value which is a string
+input_file_ref has a value which is a string
 
 </pre>
 
@@ -314,6 +317,7 @@ input_file has a value which is a string
 a reference to a hash where the following keys are defined:
 input_ws has a value which is a string
 input_file has a value which is a string
+input_file_ref has a value which is a string
 
 
 =end text
