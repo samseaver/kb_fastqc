@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
-import os,uuid
-import requests,subprocess
+import os,uuid,sys
+import requests,subprocess,shutil
+from pprint import pprint
 from KBaseReport.KBaseReportClient import KBaseReport
 from biokbase.workspace.client import Workspace as workspaceService
+from ReadsUtils.ReadsUtilsClient import ReadsUtils
 #END_HEADER
 
 
@@ -71,50 +73,35 @@ class kb_fastqc:
 
         input_file_ref = self._get_input_file_ref_from_params(input_params)
 
-        info=None
-        readLibrary=None
+        library=None
         try:
-            readLibrary = wsClient.get_objects2({'objects': [{'ref': input_file_ref}]})['data'][0]
-            info = readLibrary['info']
-            readLibrary = readLibrary['data']
+            library = wsClient.get_objects2({'objects': [{'ref': input_file_ref}]})['data'][0]
         except Exception as e:
             raise ValueError('Unable to get read library object from workspace: (' + input_file_ref + ')' + str(e))
 
-        #Check type of read
-        reads_type = "SE"
-        if("PairedEnd" in info[2]):
-            reads_type="PE"
+        download_read_params = {'read_libraries': [], 'interleave':0}
+        if("SingleEnd" in library['info'][2] or "PairedEnd" in library['info'][2]):
+            download_read_params[read_libraries].append(library['info'][7]+"/"+library['info'][1])
+        elif("SampleSet" in library['info'][2]):
+            for sample_id in library['data']['sample_ids']:
+                download_read_params['read_libraries'].append(library['info'][7]+"/"+sample_id)
 
-        reads = list()
-        if(reads_type == "SE"):
-            if 'handle' in readLibrary:
-                reads.append(readLibrary['handle'])
-            elif 'lib' in readLibrary:
-                reads.append(readLibrary['lib']['file'])
-        elif(reads_type == "PE"):
-            for number in ("1","2"):
-                if 'handle_'+number in readLibrary:
-                    reads.append(readLibrary['handle_'+number])
-                elif 'lib'+number in readLibrary:
-                    reads.append(readLibrary['lib'+number]['file'])
-
-        read_ids = list()
-        for read in reads:
-            read_file_name = str(read['id'])
-            if 'file_name' in read:
-                read_file_name = read['file_name']
-            read_ids.append(read_file_name)
+        pprint(download_read_params)
+        ru = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
+        ret = ru.download_reads(download_read_params)
 
         read_file_list=list()
-        for read_file_name in read_ids:
-            read_file_name=read_file_path+"/"+read_file_name
-            read_file_list.append(read_file_name)
+        for file in ret['files']:
+            files = ret['files'][file]['files']
 
-            read_file = open(read_file_name, 'w', 0)
-            r = requests.get(read['url']+'/node/'+read['id']+'?download', stream=True, headers=headers)
-            for chunk in r.iter_content(1024):
-                read_file.write(chunk)
+            files['fwd_name'] = files['fwd_name'].replace('.gz','')
+            shutil.move(files['fwd'],os.path.join(read_file_path, files['fwd_name']))
+            read_file_list.append(os.path.join(read_file_path, files['fwd_name']))
 
+            if(files['rev'] is not None):
+                files['rev_name'] = files['rev_name'].replace('.gz','')
+                shutil.move(files['rev'],os.path.join(read_file_path, files['rev_name']))
+                read_file_list.append(os.path.join(read_file_path, files['rev_name']))
 
         subprocess.check_output(["fastqc"]+read_file_list)
         report = "Command run: "+" ".join(["fastqc"]+read_file_list)
@@ -131,11 +118,6 @@ class kb_fastqc:
                     html_file = open(read_file_path+"/"+file, 'r')
                     html_string += html_file.read()
 
-#        html_string = "<html><title>FastQC Report</title><body>"
-#        html_string += "<p>FastQC run with "+str(input_params["input_file"])+" which contained "+str(len(reads))+" reads:</p>"
-#        for read in read_ids:
-#            html_string += read+"<br/>"
-#        html_string += "</html>"
         report_params = { 'message' : report, 'objects_created' : [],
                           'direct_html' : html_string,
                           'file_links' : output_zip_files, 
@@ -146,6 +128,9 @@ class kb_fastqc:
         kbase_report_client = KBaseReport(self.callback_url, token=token)
         output = kbase_report_client.create_extended_report(report_params)
         reported_output = { 'report_name': output['name'], 'report_ref': output['ref'] }
+
+        #Remove temp reads directory
+        shutil.rmtree(read_file_path)
 
         #END runFastQC
 

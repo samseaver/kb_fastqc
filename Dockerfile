@@ -6,6 +6,7 @@ MAINTAINER KBase Developer
 # any required dependencies for your module.
 
 RUN apt-get update && apt-get install -y ant
+RUN pip install requests[security]
 RUN mkdir -p /kb/deps
 COPY ./deps/install_fastqc.sh /kb/deps/
 WORKDIR /kb/deps
