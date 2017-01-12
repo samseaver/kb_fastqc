@@ -130,7 +130,7 @@ class kb_fastqc:
         reported_output = { 'report_name': output['name'], 'report_ref': output['ref'] }
 
         #Remove temp reads directory
-        shutil.rmtree(read_file_path)
+        shutil.rmtree(read_file_path, ignore_errors=True)
 
         #END runFastQC
 
