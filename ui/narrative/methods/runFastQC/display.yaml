@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: Reads Quality Control using FastQC
+name: FastQC - read quality analysis
 
 tooltip: |
     A quality control application for high throughput sequence data.
