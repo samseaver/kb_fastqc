@@ -119,10 +119,10 @@ class kb_fastqc:
                     html_string += html_file.read()
 
         report_params = { 'message' : report, 'objects_created' : [],
-                          'direct_html' : html_string,
+#                          'direct_html' : html_string,
+#                          'direct_html_index' : 0,
                           'file_links' : output_zip_files, 
                           'html_links' : output_html_files,
-                          'direct_html_index' : 0,
                           'workspace_name' : input_params['input_ws'],
                           'report_object_name' : 'kb_fastqc_report_' + uuid_string }
         kbase_report_client = KBaseReport(self.callback_url, token=token)
