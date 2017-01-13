@@ -118,7 +118,8 @@ class kb_fastqc:
                     html_file = open(read_file_path+"/"+file, 'r')
                     html_string += html_file.read()
 
-        report_params = { 'message' : report, 'objects_created' : [],
+        report_params = { 'objects_created' : [],
+#                          'message' : report, 
 #                          'direct_html' : html_string,
 #                          'direct_html_index' : 0,
                           'file_links' : output_zip_files, 
