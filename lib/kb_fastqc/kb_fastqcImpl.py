@@ -81,7 +81,7 @@ class kb_fastqc:
 
         download_read_params = {'read_libraries': [], 'interleave':0}
         if("SingleEnd" in library['info'][2] or "PairedEnd" in library['info'][2]):
-            download_read_params[read_libraries].append(library['info'][7]+"/"+library['info'][1])
+            download_read_params['read_libraries'].append(library['info'][7]+"/"+library['info'][1])
         elif("SampleSet" in library['info'][2]):
             for sample_id in library['data']['sample_ids']:
                 download_read_params['read_libraries'].append(library['info'][7]+"/"+sample_id)
