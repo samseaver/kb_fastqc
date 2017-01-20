@@ -121,7 +121,7 @@ class kb_fastqc:
         report_params = { 'objects_created' : [],
 #                          'message' : report, 
 #                          'direct_html' : html_string,
-#                          'direct_html_index' : 0,
+                          'direct_html_index' : 0,
                           'file_links' : output_zip_files, 
                           'html_links' : output_html_files,
                           'workspace_name' : input_params['input_ws'],
