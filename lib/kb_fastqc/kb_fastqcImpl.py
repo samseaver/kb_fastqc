@@ -79,29 +79,32 @@ class kb_fastqc:
         except Exception as e:
             raise ValueError('Unable to get read library object from workspace: (' + input_file_ref + ')' + str(e))
 
-        download_read_params = {'read_libraries': [], 'interleave':0}
+        download_read_params = {'read_libraries': [], 'interleaved':"false"}
         if("SingleEnd" in library['info'][2] or "PairedEnd" in library['info'][2]):
             download_read_params['read_libraries'].append(library['info'][7]+"/"+library['info'][1])
         elif("SampleSet" in library['info'][2]):
             for sample_id in library['data']['sample_ids']:
                 download_read_params['read_libraries'].append(library['info'][7]+"/"+sample_id)
 
-        pprint(download_read_params)
+#        pprint(download_read_params)
         ru = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
         ret = ru.download_reads(download_read_params)
+#        pprint(ret)
 
         read_file_list=list()
         for file in ret['files']:
             files = ret['files'][file]['files']
 
-            files['fwd_name'] = files['fwd_name'].replace('.gz','')
-            shutil.move(files['fwd'],os.path.join(read_file_path, files['fwd_name']))
-            read_file_list.append(os.path.join(read_file_path, files['fwd_name']))
+            fwd_name=files['fwd'].split('/')[-1]
+            fwd_name=fwd_name.replace('.gz','')
+            shutil.move(files['fwd'],os.path.join(read_file_path, fwd_name))
+            read_file_list.append(os.path.join(read_file_path, fwd_name))
 
             if(files['rev'] is not None):
-                files['rev_name'] = files['rev_name'].replace('.gz','')
-                shutil.move(files['rev'],os.path.join(read_file_path, files['rev_name']))
-                read_file_list.append(os.path.join(read_file_path, files['rev_name']))
+                rev_name=files['rev'].split('/')[-1]
+                rev_name=rev_name.replace('.gz','')
+                shutil.move(files['rev'],os.path.join(read_file_path, rev_name))
+                read_file_list.append(os.path.join(read_file_path, rev_name))
 
         subprocess.check_output(["fastqc"]+read_file_list)
         report = "Command run: "+" ".join(["fastqc"]+read_file_list)
