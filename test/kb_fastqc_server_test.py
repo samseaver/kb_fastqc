@@ -110,16 +110,15 @@ class kb_fastqcTest(unittest.TestCase):
         output = self.getImpl().runFastQC(self.getContext(), input_params)[0]
         self.assertIn('report_name', output)
         self.assertIn('report_ref', output)
-        pprint(output)
+#        pprint(output)
 
         report = self.getWsClient().get_objects2({'objects': [{'ref': output['report_ref']}]})['data'][0]['data']
-        pprint(report)
+#        pprint(report)
 
         self.assertIn('direct_html', report)
         self.assertIn('file_links', report)
         self.assertIn('html_links', report)
         self.assertIn('objects_created', report)
         self.assertIn('text_message', report)
-#        self.assertTrue('FastQC Report' in report['direct_html'])
 
 
