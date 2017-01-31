@@ -7,6 +7,11 @@ MAINTAINER KBase Developer
 
 RUN apt-get update && apt-get install -y ant
 RUN pip install requests[security]
+
+RUN mkdir -p /kb/data
+COPY ./data/index_start.txt /kb/data/
+COPY ./data/index_end.txt /kb/data/
+
 RUN mkdir -p /kb/deps
 COPY ./deps/install_fastqc.sh /kb/deps/
 WORKDIR /kb/deps
