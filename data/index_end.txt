@@ -1,8 +1,3 @@
-        </div>
-    </div>
-    <div id="body">
-        <iframe id="content" style="width: 100%; border: none; " src="page0.html"></iframe>
-    </div>
     <script> 
         // Set height of the iframe based on the space available in this viewport
         function setHeight() {
