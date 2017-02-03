@@ -24,7 +24,7 @@ class kb_fastqc:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "0.0.2"
+    VERSION = "1.0.0"
     GIT_URL = "git@github.com:msneddon/kb_fastqc"
     GIT_COMMIT_HASH = "72a6925fa0ceccf2853b5d6743adcf31af97a7e7"
 
