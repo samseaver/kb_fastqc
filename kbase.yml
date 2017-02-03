@@ -2,13 +2,13 @@ module-name:
     kb_fastqc
 
 module-description:
-    A KBase module
+    A module for checking read quality using FastQC (http://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
 service-language:
     python
 
 module-version:
-    0.0.2
+    1.0.0
 
 owners:
     [seaver]
