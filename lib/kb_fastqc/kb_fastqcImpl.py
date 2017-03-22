@@ -24,9 +24,9 @@ class kb_fastqc:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.0.0"
-    GIT_URL = "git@github.com:msneddon/kb_fastqc"
-    GIT_COMMIT_HASH = "72a6925fa0ceccf2853b5d6743adcf31af97a7e7"
+    VERSION = "1.0.1"
+    GIT_URL = "https://github.com/rsutormin/kb_fastqc"
+    GIT_COMMIT_HASH = "82f3adf025cccb35b247652439709a64a78ca74b"
 
     #BEGIN_CLASS_HEADER
     
@@ -50,6 +50,7 @@ class kb_fastqc:
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         #END_CONSTRUCTOR
         pass
+
 
     def runFastQC(self, ctx, input_params):
         """
