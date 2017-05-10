@@ -84,7 +84,13 @@ class kb_fastqc:
             download_read_params['read_libraries'].append(library['info'][7]+"/"+library['info'][1])
         elif("SampleSet" in library['info'][2]):
             for sample_id in library['data']['sample_ids']:
-                download_read_params['read_libraries'].append(library['info'][7]+"/"+sample_id)
+                if("/" in sample_id):
+                    download_read_params['read_libraries'].append(sample_id)
+                else:
+                    if(sample_id.isdigit()):
+                        download_read_params['read_libraries'].append(library['info'][6]+"/"+sample_id)
+                    else:
+                        download_read_params['read_libraries'].append(library['info'][7]+"/"+sample_id)
 
 #        pprint(download_read_params)
         ru = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
