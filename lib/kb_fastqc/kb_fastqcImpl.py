@@ -134,7 +134,7 @@ class kb_fastqc:
             if(file.endswith(".html")):
                 #Move html into html folder
                 shutil.move(os.path.join(read_file_path,file),os.path.join(read_file_path,'html',file))
-                file = os.path.join('html',file)
+#                file = os.path.join('html',file)
 
                 if(first_file==""):
                     first_file=file
