@@ -26,9 +26,9 @@ class kb_fastqc:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.0.1"
-    GIT_URL = "https://github.com/rsutormin/kb_fastqc"
-    GIT_COMMIT_HASH = "82f3adf025cccb35b247652439709a64a78ca74b"
+    VERSION = "1.0.3"
+    GIT_URL = "https://github.com/Tianhao-Gu/kb_fastqc.git"
+    GIT_COMMIT_HASH = "a211b7d9517b1485d30f3c121dd229c1434d8bd8"
 
     #BEGIN_CLASS_HEADER
 
@@ -160,22 +160,29 @@ class kb_fastqc:
         ru = ReadsUtils(os.environ['SDK_CALLBACK_URL'])
         ret = ru.download_reads(download_read_params)
 
-        read_file_list=list()
+        read_file_list = list()
         for file in ret['files']:
+
+            obj_info = self.dfu.get_objects({'object_refs': [file]})['data'][0]['info']
+            obj_ref_suffix = '_' + str(obj_info[6]) + '_' + str(obj_info[0]) + '_' + str(obj_info[4])
+
             files = ret['files'][file]['files']
 
-            fwd_name=files['fwd'].split('/')[-1]
-            fwd_name=fwd_name.replace('.gz','')
-            shutil.move(files['fwd'],os.path.join(read_file_path, fwd_name))
+            fwd_name = files['fwd'].split('/')[-1]
+            fwd_name = fwd_name.replace('.gz', '')
+            # using object_name + ref_suffix + suffix as file name
+            fwd_name = file.split('/')[-1] + obj_ref_suffix + '.' + fwd_name.split('.', 1)[-1]
+            shutil.move(files['fwd'], os.path.join(read_file_path, fwd_name))
             read_file_list.append(os.path.join(read_file_path, fwd_name))
 
             if(files['rev'] is not None):
-                rev_name=files['rev'].split('/')[-1]
-                rev_name=rev_name.replace('.gz','')
-                shutil.move(files['rev'],os.path.join(read_file_path, rev_name))
+                rev_name = files['rev'].split('/')[-1]
+                rev_name = rev_name.replace('.gz', '')
+                rev_name = file.split('/')[-1] + obj_ref_suffix + '.' + rev_name.split('.', 1)[-1]
+                shutil.move(files['rev'], os.path.join(read_file_path, rev_name))
                 read_file_list.append(os.path.join(read_file_path, rev_name))
 
-        subprocess.check_output(["fastqc"]+read_file_list)
+        subprocess.check_output(["fastqc"] + read_file_list)
         # report = "Command run: "+" ".join(["fastqc"]+read_file_list)
 
         output = self.create_report(token, input_params['input_ws'],
