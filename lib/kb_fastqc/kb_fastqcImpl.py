@@ -164,6 +164,7 @@ class kb_fastqc:
         for file in ret['files']:
 
             obj_info = self.dfu.get_objects({'object_refs': [file]})['data'][0]['info']
+            obj_name = obj_info[1]
             obj_ref_suffix = '_' + str(obj_info[6]) + '_' + str(obj_info[0]) + '_' + str(obj_info[4])
 
             files = ret['files'][file]['files']
@@ -171,7 +172,7 @@ class kb_fastqc:
             fwd_name = files['fwd'].split('/')[-1]
             fwd_name = fwd_name.replace('.gz', '')
             # using object_name + ref_suffix + suffix as file name
-            fwd_name = file.split('/')[-1] + obj_ref_suffix + '.' + fwd_name.split('.', 1)[-1]
+            fwd_name = obj_name + obj_ref_suffix + '.' + fwd_name.split('.', 1)[-1]
             shutil.move(files['fwd'], os.path.join(read_file_path, fwd_name))
             read_file_list.append(os.path.join(read_file_path, fwd_name))
 
