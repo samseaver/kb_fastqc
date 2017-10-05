@@ -26,9 +26,9 @@ class kb_fastqc:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.0.3"
+    VERSION = "1.0.4"
     GIT_URL = "https://github.com/Tianhao-Gu/kb_fastqc.git"
-    GIT_COMMIT_HASH = "a211b7d9517b1485d30f3c121dd229c1434d8bd8"
+    GIT_COMMIT_HASH = "3f552db07e04f4b01eec0b38ec49546a2335d87e"
 
     #BEGIN_CLASS_HEADER
 
@@ -179,7 +179,7 @@ class kb_fastqc:
             if(files['rev'] is not None):
                 rev_name = files['rev'].split('/')[-1]
                 rev_name = rev_name.replace('.gz', '')
-                rev_name = file.split('/')[-1] + obj_ref_suffix + '.' + rev_name.split('.', 1)[-1]
+                rev_name = obj_name + obj_ref_suffix + '.' + rev_name.split('.', 1)[-1]
                 shutil.move(files['rev'], os.path.join(read_file_path, rev_name))
                 read_file_list.append(os.path.join(read_file_path, rev_name))
 
