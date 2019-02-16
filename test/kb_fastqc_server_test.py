@@ -1,26 +1,18 @@
 # -*- coding: utf-8 -*-
-import unittest
-import os, sys
-import json
-import time
-import requests
-import subprocess
+import os
 import shutil
-
+import subprocess
+import time
+import unittest
+from configparser import ConfigParser  # py3
 from os import environ
-try:
-    from ConfigParser import ConfigParser  # py2
-except:
-    from configparser import ConfigParser  # py3
 
-from pprint import pprint
-
-from biokbase.workspace.client import Workspace as workspaceService
+from installed_clients.ReadsUtilsClient import ReadsUtils
+from installed_clients.WorkspaceClient import Workspace as workspaceService
+from kb_fastqc.authclient import KBaseAuth as _KBaseAuth
 from kb_fastqc.kb_fastqcImpl import kb_fastqc
 from kb_fastqc.kb_fastqcServer import MethodContext
 
-from ReadsUtils.ReadsUtilsClient import ReadsUtils
-from kb_fastqc.authclient import KBaseAuth as _KBaseAuth
 
 class kb_fastqcTest(unittest.TestCase):
 
@@ -93,7 +85,7 @@ class kb_fastqcTest(unittest.TestCase):
     # NOTE: According to Python unittest naming rules test method names should start from 'test'.
     def test_local_fastqc(self):
         # This assumes, and apparently rightly so, that we're still in the /kb/module/test directory
-        output = subprocess.check_output(["fastqc", self.large_fq_test_file1])
+        output = subprocess.check_output(["fastqc", self.large_fq_test_file1]).decode()
         self.assertTrue("Analysis complete" in output)
         pass
         
