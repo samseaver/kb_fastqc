@@ -1,4 +1,4 @@
-FROM kbase/kbase:sdkbase.latest
+FROM kbase/sdkbase2:python
 MAINTAINER KBase Developer
 # -----------------------------------------
 
@@ -6,7 +6,6 @@ MAINTAINER KBase Developer
 # any required dependencies for your module.
 
 RUN apt-get update && apt-get install -y ant
-RUN pip install requests[security]
 
 RUN mkdir -p /kb/data
 COPY ./data/index_start.txt /kb/data/
@@ -17,17 +16,9 @@ COPY ./deps/install_fastqc.sh /kb/deps/
 WORKDIR /kb/deps
 RUN ./install_fastqc.sh
 
-# update installed WS client (will now include get_objects2)
-RUN mkdir -p /kb/module && \
-    cd /kb/module && \
-    git clone https://github.com/kbase/workspace_deluxe && \
-    cd workspace_deluxe && \
-    git checkout 696add5 && \
-    rm -rf /kb/deployment/lib/biokbase/workspace && \
-    cp -vr lib/biokbase/workspace /kb/deployment/lib/biokbase/workspace && \
-    cd /kb/module && \
-    rm -rf workspace_deluxe
-
+# WIERD: https://community.jaspersoft.com/questions/1064816/solved-getting-atkswing-errors-running-report
+RUN rm -f /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/accessibility.properties && \
+    rm -f /etc/java-8-openjdk/accessibility.properties
 # -----------------------------------------
 
 COPY ./ /kb/module
