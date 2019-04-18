@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
 import os
-import uuid
-import subprocess
 import shutil
-from KBaseReport.KBaseReportClient import KBaseReport
-from biokbase.workspace.client import Workspace as workspaceService
-from ReadsUtils.ReadsUtilsClient import ReadsUtils
-from DataFileUtil.DataFileUtilClient import DataFileUtil
+import subprocess
+import uuid
+
+from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.KBaseReportClient import KBaseReport
+from installed_clients.ReadsUtilsClient import ReadsUtils
+from installed_clients.WorkspaceClient import Workspace as workspaceService
 #END_HEADER
 
 
@@ -26,9 +27,9 @@ class kb_fastqc:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.0.4"
-    GIT_URL = "https://github.com/Tianhao-Gu/kb_fastqc.git"
-    GIT_COMMIT_HASH = "3f552db07e04f4b01eec0b38ec49546a2335d87e"
+    VERSION = "1.1.0"
+    GIT_URL = "https://github.com/kbaseapps/kb_fastqc.git"
+    GIT_COMMIT_HASH = "83f9fb4a0cab66b9bfc72821615e06e90b53256b"
 
     #BEGIN_CLASS_HEADER
 
