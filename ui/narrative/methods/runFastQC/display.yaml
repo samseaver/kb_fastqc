@@ -31,7 +31,7 @@ suggestions:
 parameters :
     input_file_ref :
         ui-name : |
-            Read Library/RNA-seq Sample Set <font color=red>*</font.
+            Read Library/RNA-seq Sample Set
         short-hint : |
             Select the Read Library or RNA-seq Sample Set to run quality control on.
 
