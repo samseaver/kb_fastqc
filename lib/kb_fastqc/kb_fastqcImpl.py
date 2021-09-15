@@ -27,9 +27,9 @@ class kb_fastqc:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.1.0"
-    GIT_URL = "https://github.com/kbaseapps/kb_fastqc.git"
-    GIT_COMMIT_HASH = "83f9fb4a0cab66b9bfc72821615e06e90b53256b"
+    VERSION = "1.2.0"
+    GIT_URL = "https://github.com/kbaseapps/kb_fastqc"
+    GIT_COMMIT_HASH = "b7ea7b38246ac731faa2c89ea9193b662bcaf5cf"
 
     #BEGIN_CLASS_HEADER
 
@@ -169,7 +169,7 @@ class kb_fastqc:
             obj_ref_suffix = '_' + str(obj_info[6]) + '_' + str(obj_info[0]) + '_' + str(obj_info[4])
 
             files = ret['files'][file]['files']
-
+            
             fwd_name = files['fwd'].split('/')[-1]
             fwd_name = fwd_name.replace('.gz', '')
             # using object_name + ref_suffix + suffix as file name
