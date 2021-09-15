@@ -1,9 +1,9 @@
 {
-    "ver": "0.0.2",
+    "ver": "1.2.0",
     "authors": [
         "seaver"
     ],
-    "contact": "",
+    "contact": "http://www.kbase.us/support",
     "categories": ["active", "reads"],
     "widgets": {
         "input": null,

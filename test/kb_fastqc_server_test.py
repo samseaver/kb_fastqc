@@ -45,13 +45,9 @@ class kb_fastqcTest(unittest.TestCase):
         cls.serviceImpl = kb_fastqc(cls.cfg)
 
         #retrieve and setup test files
-        test_fq_filename = "test_1.fastq.gz"
-        output = subprocess.check_output(["curl",
-                                          "-o",
-                                          test_fq_filename,
-                                          "http://bioseed.mcs.anl.gov/~seaver/Files/Sample_Reads/WT1_S1_L001_R2_001.fastq.gz"])
-        cls.large_fq_test_file1 = os.path.join(cls.cfg['scratch'], test_fq_filename)
-        shutil.copy(test_fq_filename, cls.large_fq_test_file1)
+        local_test_fq_filename = "local_test.fastq"
+        cls.local_fq_test_file1 = os.path.join(cls.cfg['scratch'], local_test_fq_filename)
+        shutil.copy(os.path.join("data", local_test_fq_filename), cls.local_fq_test_file1)
 
         fq_filename = "interleaved.fq"
         cls.small_fq_test_file2 = os.path.join(cls.cfg['scratch'], fq_filename)
@@ -85,7 +81,7 @@ class kb_fastqcTest(unittest.TestCase):
     # NOTE: According to Python unittest naming rules test method names should start from 'test'.
     def test_local_fastqc(self):
         # This assumes, and apparently rightly so, that we're still in the /kb/module/test directory
-        output = subprocess.check_output(["fastqc", self.large_fq_test_file1]).decode()
+        output = subprocess.check_output(["fastqc", self.local_fq_test_file1]).decode()
         self.assertTrue("Analysis complete" in output)
         pass
         
