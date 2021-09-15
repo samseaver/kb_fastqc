@@ -5,27 +5,28 @@ mkdir -p temp
 ########### FastQC #############
 echo "Downloading fastqc..."
 cd ./temp
-curl -o fastqc.zip 'http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.5_source.zip'
+#curl -o fastqc.zip 'http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9_source.zip'
+curl -o fastqc.zip 'https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.9.zip'
 unzip fastqc.zip
 cd FastQC
-ant
+#ant  # no longer compiling from source
 
 #retrieve missing jar
 curl -o bin/commons-math.zip http://mirror.cc.columbia.edu/pub/software/apache/commons/math/binaries/commons-math3-3.6.1-bin.zip
 unzip -j bin/commons-math.zip commons-math3-3.6.1/commons-math3-3.6.1.jar -d ./bin/
 
 #move required files
-mv bin/Configuration ../../bin/
-mv bin/Templates ../../bin/
+mv Configuration ../../bin/
+mv Templates ../../bin/
 
 #move included jars
-mv bin/*.jar ../../bin/
-mv bin/uk ../../bin/
-mv bin/net ../../bin/
+mv *.jar ../../bin/
+mv uk ../../bin/
+mv net ../../bin/
 
 #move and fix fastqc to include missing jar
-chmod u+x bin/fastqc
-mv bin/fastqc ../../bin/fastqc.pl
+chmod u+x fastqc
+mv fastqc ../../bin/fastqc.pl
 echo '#!/bin/bash' > ../../bin/fastqc
 echo 'script_dir="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"' >> ../../bin/fastqc
 echo 'export CLASSPATH=${script_dir}/commons-math3-3.6.1.jar' >> ../../bin/fastqc

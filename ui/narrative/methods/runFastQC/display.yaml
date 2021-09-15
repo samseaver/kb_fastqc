@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: Assess Read Quality with FastQC - v0.11.5
+name: Assess Read Quality with FastQC - v0.11.9
 
 tooltip: |
     A quality control application for high throughput sequence data.
@@ -54,6 +54,7 @@ description : |
       <li><b>Kmer Content:</b> displays relative K-mer (k=7) enrichment over the read length for the top six K-mers. More specifically, it measures the number of each 7-mer at each position in the library and then uses a binomial test to look for significant deviations from an even coverage at all positions and reports the 7-mers with positionally biased enrichment.</li>
     </ul>
 
+    <p>Note: FastQC v0.11.9 was released on Aug 01, 2019.</p>
 
 publications :
 
