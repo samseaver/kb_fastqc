@@ -5,7 +5,7 @@ MAINTAINER KBase Developer
 # Insert apt-get instructions here to install
 # any required dependencies for your module.
 
-RUN apt-get update && apt-get install -y ant
+RUN apt-get update && apt-get install -y ant  && apt-get -y install wget
 
 RUN mkdir -p /kb/data
 COPY ./data/index_start.txt /kb/data/
@@ -20,7 +20,6 @@ RUN ./install_fastqc.sh
 RUN rm -f /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/accessibility.properties && \
     rm -f /etc/java-8-openjdk/accessibility.properties
 # -----------------------------------------
-
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 
